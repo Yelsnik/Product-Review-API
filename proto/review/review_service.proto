@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package review;
+
+option go_package = "review-service/review";
+
+
+message AddReviewRequest {
+    string review = 1;
+    string product_id = 2;
+}
+
+message AddReviewResponse {
+    string message = 1;
+}
+
+message GetReviewsRequest {
+    string product_id = 1;
+}
+
+message GetReviewsResponse {}
+
+message UpdateReviewRequest {}
+
+message UpdateReviewResponse {}
+
+message DeleteReviewRequest {}
+
+message DeleteReviewResponse {}
+
+service Review {
+    rpc AddReview (AddReviewRequest) returns (AddReviewResponse){}
+    rpc GetReviews(GetReviewsRequest) returns (GetReviewsResponse){}
+    rpc UpdateReviews(UpdateReviewRequest) returns (UpdateReviewResponse){}
+}
