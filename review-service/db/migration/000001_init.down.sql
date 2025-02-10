@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS review_messages;
+DROP TABLE IF EXISTS reviews;

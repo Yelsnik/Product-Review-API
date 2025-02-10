@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package nlp;
+
+option go_package = "nlp-service/nlp";
+
+
+message AnalyzeRequest {
+    string text = 1;
+}
+
+message AnalyzeResponse {
+    float score = 1;
+    string label positive = 2;
+}
+
+service SentimentAnalysis {
+    rpc Analyze(AnalyzeRequest) returns (AnalyzeResponse){}
+}
