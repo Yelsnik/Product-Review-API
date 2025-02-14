@@ -4,6 +4,7 @@ import os
 from sentiment_pb2_grpc import SentimentAnalysisServicer
 from sentiment_pb2 import SentimentResponse
 from textblob import TextBlob
+import math
 
 # # Get the absolute path of the "nlp" directory
 # nlp_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "nlp"))
@@ -30,7 +31,7 @@ class SentimentServer(SentimentAnalysisServicer):
     def Analyze(self, request, context):
         try:
             score, label = analyzer(request)
-            return SentimentResponse(score, label)
+            return SentimentResponse(score=score, label=label)
         except Exception as e:
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(f"Analysis failed: {str(e)}")

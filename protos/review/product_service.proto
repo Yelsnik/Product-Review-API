@@ -22,21 +22,18 @@ message GetProductDetailsResponse {
 }
 
 message Products {
-    string url = 1;
-    string title = 2;
-    string thumb_nail = 3;
-    bool sponsored = 4;
-    float score = 5;
-    float current_price = 6;
-    string currency = 7;
-    bool bestseller = 8;
-    string asin = 9;
+    string asin = 1;
+    string product_title = 2;
+    string product_price = 3;
+    string product_original_price = 4;
+    string currency = 5;
+    string product_url = 6;
+    string product_photo = 7;
 }
 
 message GetProductsRequest {
-    string keyword = 1;
+    string page = 1;
     string country = 2;
-    string category = 3;
 }
 
 message GetProductsResponse {

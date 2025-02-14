@@ -1,6 +1,9 @@
 run:
 	python3 main.py
 
+test:
+	python3 -m unittest $(file)
+
 proto:
 	python3 -m grpc_tools.protoc -I. \
 	--python_out=. \
