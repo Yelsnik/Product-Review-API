@@ -14,6 +14,7 @@ type Querier interface {
 	CreateReview(ctx context.Context, arg CreateReviewParams) (Review, error)
 	CreateReviewMessage(ctx context.Context, arg CreateReviewMessageParams) (ReviewMessage, error)
 	GetReview(ctx context.Context, id uuid.UUID) (Review, error)
+	GetReviewByProductID(ctx context.Context, productID string) (Review, error)
 	GetReviewMessage(ctx context.Context, id uuid.UUID) (ReviewMessage, error)
 	GetReviewMessages(ctx context.Context, id uuid.UUID) (ReviewMessage, error)
 	ReviewCount(ctx context.Context, reviewID uuid.UUID) (int64, error)

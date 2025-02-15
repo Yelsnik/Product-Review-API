@@ -5,14 +5,14 @@ import (
 )
 
 type Config struct {
-	DBSource          string `mapstructure:"DB_SOURCE"`
-	GRPCServerAddress string `mapstructure:"GRPC_SERVER_ADDRESS"`
-	RapidAPIHost      string `mapstructure:"RAPID_API_HOST"`
-	RapidAPIKey       string `mapstructure:"RAPID_API_KEY"`
-	RapidAPISearchUrl string `mapstructure:"RAPID_API_SEARCH_URL"`
+	DBSource           string `mapstructure:"DB_SOURCE"`
+	GRPCServerAddress  string `mapstructure:"GRPC_SERVER_ADDRESS"`
+	RapidAPIHost       string `mapstructure:"RAPID_API_HOST"`
+	RapidAPIKey        string `mapstructure:"RAPID_API_KEY"`
+	RapidAPISearchUrl  string `mapstructure:"RAPID_API_SEARCH_URL"`
 	RapidAPIDetailsUrl string `mapstructure:"RAPID_API_DETAILS_URL"`
+	Redis              string `mapstructure:"REDIS"`
 }
-
 
 func LoadConfig(path string) (config Config, err error) {
 	viper.AddConfigPath(path)

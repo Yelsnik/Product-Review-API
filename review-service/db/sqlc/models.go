@@ -13,7 +13,6 @@ import (
 
 type Review struct {
 	ID           uuid.UUID `json:"id"`
-	Rating       string    `json:"rating"`
 	ProductID    string    `json:"product_id"`
 	NumOfReviews float64   `json:"num_of_reviews"`
 }

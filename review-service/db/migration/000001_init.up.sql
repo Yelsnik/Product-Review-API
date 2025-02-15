@@ -12,7 +12,6 @@ CREATE TABLE "review_messages" (
 
 CREATE TABLE "reviews" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  "rating" varchar UNIQUE NOT NULL,
   "product_id" varchar NOT NULL,
   "num_of_reviews" float NOT NULL
 );

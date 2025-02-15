@@ -9,6 +9,7 @@ import (
 
 type Store interface {
 	Querier
+	AddReviewTx(ctx context.Context, arg CreateReviewMessageParams) (ReviewTxResult, error)
 }
 
 type SQLStore struct {

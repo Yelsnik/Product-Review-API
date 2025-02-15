@@ -10,7 +10,7 @@ type DataDetails struct {
 	Country              string  `json:"country"`
 	ProductByline        string  `json:"product_byline"`
 	ProductBylineLink    string  `json:"product_byline_link"`
-	ProductStarRating    float64 `json:"product_star_rating"`
+	ProductStarRating    string `json:"product_star_rating"`
 	ProductNumRatings    int     `json:"product_num_ratings"`
 	ProductURL           string  `json:"product_url"`
 	ProductPhoto         string  `json:"product_photo"`
