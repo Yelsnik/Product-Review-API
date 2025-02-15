@@ -3,20 +3,12 @@ package db
 import (
 	"context"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type ReviewTxResult struct {
 	Review  Review        `json:"review"`
 	Message ReviewMessage `json:"review_message"`
-}
-
-type ReviewTxParams struct {
-	Review   string    `json:"review"`
-	Score    float64   `json:"score"`
-	Label    string    `json:"label"`
-	ReviewID uuid.UUID `json:"review_id"`
 }
 
 func (store *SQLStore) AddReviewTx(ctx context.Context, arg CreateReviewMessageParams) (ReviewTxResult, error) {

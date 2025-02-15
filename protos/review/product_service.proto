@@ -6,10 +6,14 @@ option go_package = "review-service/review";
 
 message ProductDetails {
     string asin = 1;
-    string description = 2;
-    string title = 3;
-    string url = 4;
-    string main_image = 5;
+    string product_title = 2;
+    string product_price = 3;
+    string product_original_price = 4;
+    string currency = 5;
+    string country = 6;
+    string product_url = 7;
+    string product_photo = 8;
+    string product_availability = 9;
 }
 
 message GetProductDetailsRequest {
