@@ -5,44 +5,38 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=mahanta
-      - POSTGRES_DB=e_commerce_user
+      - POSTGRES_DB=review_service
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U root -d e_commerce_user"]
+      test: ["CMD-SHELL", "pg_isready -U root -d review_service"]
       interval: 5s
       timeout: 1s
       retries: 10
 
-  rabbitmq:
-    image: rabbitmq:3-management
+  redis:
+    image: redis
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASSWORD=guest
+      - 6379:6379
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      test: ["CMD", "redis-diagnostics", "check_running"]
       interval: 10s
       timeout: 30s
       retries: 3
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
-      - rabbitmq-log:/var/log/rabbitmq
+      - redis:/data
 
   api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
       - "9090:9090"
     environment:
-      - DB_SOURCE=postgresql://root:mahanta@postgres:5432/e_commerce_user?sslmode=disable
-      - RABBITMQ=amqp://guest:guest@rabbitmq:5672/
+      - DB_SOURCE=postgresql://root:mahanta@localhost:5432/review_service?sslmode=disable
+      - REDIS=redis://localhost:6379
     depends_on:
       postgres:
         condition: service_healthy
-      rabbitmq:
+      redis:
         condition: service_healthy
 
     entrypoint:
@@ -51,12 +45,11 @@ services:
         "postgres:5432",
         "--",
         "/app/wait-for.sh",
-        "rabbitmq:5672",
+        "redis:5672",
         "--",
         "/app/start.sh",
       ]
     command: ["/app/main"]
 
 volumes:
-  rabbitmq-data:
-  rabbitmq-log:
+  redis:

@@ -2,7 +2,7 @@ import grpc
 import sys
 import os
 from sentiment_pb2_grpc import SentimentAnalysisServicer
-from sentiment_pb2 import SentimentResponse
+from sentiment_pb2 import SentimentResponse, SentimentRequest
 from textblob import TextBlob
 import math
 
@@ -28,9 +28,9 @@ class SentimentServer(SentimentAnalysisServicer):
         self.model = "hello"
         
 
-    def Analyze(self, request, context):
+    def Analyze(self, request: SentimentRequest, context):
         try:
-            score, label = analyzer(request)
+            score, label = analyzer(request.text)
             return SentimentResponse(score=score, label=label)
         except Exception as e:
             context.set_code(grpc.StatusCode.INTERNAL)

@@ -12,7 +12,11 @@ INSERT INTO review_messages (
 SELECT * FROM review_messages
 WHERE id = $1 LIMIT 1;
 
--- name: GetReviewMessages :one
+-- name: GetReviewMessagesByReview :many
+SELECT * FROM review_messages
+WHERE review_id = $1;
+
+-- name: GetReviewMessages :many
 SELECT * FROM review_messages
 WHERE id = $1;
 

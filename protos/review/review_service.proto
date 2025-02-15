@@ -2,8 +2,20 @@ syntax = "proto3";
 
 package review;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "review-service/review";
 
+
+message Reviews{
+    string id = 1;
+    string review = 2;
+    float score = 3;
+    string label = 4;
+    string review_id = 5;
+    optional google.protobuf.Timestamp updated_at = 6;
+    google.protobuf.Timestamp created_at = 7;
+}
 
 message AddReviewRequest {
     string review = 1;
@@ -18,7 +30,9 @@ message GetReviewsRequest {
     string product_id = 1;
 }
 
-message GetReviewsResponse {}
+message GetReviewsResponse {
+    repeated Reviews reviews = 1;
+}
 
 message UpdateReviewRequest {}
 

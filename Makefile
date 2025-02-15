@@ -20,7 +20,6 @@ protot-review:
     --ts_proto_out=$(service)/pb/ \
     --ts_proto_opt=nestJs=true \
     --proto_path=protos/review \
-    --protos_path=/usr/local/include \
     protos/review/*.proto
 
 .PHONY: proto-review protot-review proto-nlp-py

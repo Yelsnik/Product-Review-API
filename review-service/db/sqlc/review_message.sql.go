@@ -70,24 +70,70 @@ func (q *Queries) GetReviewMessage(ctx context.Context, id uuid.UUID) (ReviewMes
 	return i, err
 }
 
-const getReviewMessages = `-- name: GetReviewMessages :one
+const getReviewMessages = `-- name: GetReviewMessages :many
 SELECT id, review, score, label, review_id, updated_at, created_at FROM review_messages
 WHERE id = $1
 `
 
-func (q *Queries) GetReviewMessages(ctx context.Context, id uuid.UUID) (ReviewMessage, error) {
-	row := q.db.QueryRow(ctx, getReviewMessages, id)
-	var i ReviewMessage
-	err := row.Scan(
-		&i.ID,
-		&i.Review,
-		&i.Score,
-		&i.Label,
-		&i.ReviewID,
-		&i.UpdatedAt,
-		&i.CreatedAt,
-	)
-	return i, err
+func (q *Queries) GetReviewMessages(ctx context.Context, id uuid.UUID) ([]ReviewMessage, error) {
+	rows, err := q.db.Query(ctx, getReviewMessages, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ReviewMessage
+	for rows.Next() {
+		var i ReviewMessage
+		if err := rows.Scan(
+			&i.ID,
+			&i.Review,
+			&i.Score,
+			&i.Label,
+			&i.ReviewID,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getReviewMessagesByReview = `-- name: GetReviewMessagesByReview :many
+SELECT id, review, score, label, review_id, updated_at, created_at FROM review_messages
+WHERE review_id = $1
+`
+
+func (q *Queries) GetReviewMessagesByReview(ctx context.Context, reviewID uuid.UUID) ([]ReviewMessage, error) {
+	rows, err := q.db.Query(ctx, getReviewMessagesByReview, reviewID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ReviewMessage
+	for rows.Next() {
+		var i ReviewMessage
+		if err := rows.Scan(
+			&i.ID,
+			&i.Review,
+			&i.Score,
+			&i.Label,
+			&i.ReviewID,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const reviewCount = `-- name: ReviewCount :one
