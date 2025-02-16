@@ -10,7 +10,7 @@ const key = "product_leaderboard"
 
 type LeaderboardEntry struct {
 	ProductId string
-	score     float64
+	Score     float64
 }
 
 type Leaderboard interface {
@@ -41,7 +41,7 @@ func (l *LeaderboardClient) GetTopProducts(ctx context.Context, limit int64) ([]
 	for _, v := range results {
 		data := LeaderboardEntry{
 			ProductId: v.Member.(string),
-			score:     v.Score,
+			Score:     v.Score,
 		}
 
 		leaderboard = append(leaderboard, data)

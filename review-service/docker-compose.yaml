@@ -17,9 +17,9 @@ services:
     ports:
       - 6379:6379
     healthcheck:
-      test: ["CMD", "redis-diagnostics", "check_running"]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
-      timeout: 30s
+      timeout: 5s
       retries: 3
     volumes:
       - redis:/data
@@ -31,7 +31,7 @@ services:
     ports:
       - "9090:9090"
     environment:
-      - DB_SOURCE=postgresql://root:mahanta@localhost:5432/review_service?sslmode=disable
+      - DB_SOURCE=postgresql://root:mahanta@postgres:5432/review_service?sslmode=disable
       - REDIS=redis://localhost:6379
     depends_on:
       postgres:
@@ -53,3 +53,4 @@ services:
 
 volumes:
   redis:
+    driver: local

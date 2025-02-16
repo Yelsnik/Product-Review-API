@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Review_AddReview_FullMethodName     = "/review.Review/AddReview"
-	Review_GetReviews_FullMethodName    = "/review.Review/GetReviews"
-	Review_UpdateReviews_FullMethodName = "/review.Review/UpdateReviews"
+	Review_AddReview_FullMethodName        = "/review.Review/AddReview"
+	Review_GetReviews_FullMethodName       = "/review.Review/GetReviews"
+	Review_GetTop10Products_FullMethodName = "/review.Review/GetTop10Products"
+	Review_UpdateReviews_FullMethodName    = "/review.Review/UpdateReviews"
 )
 
 // ReviewClient is the client API for Review service.
@@ -30,6 +31,7 @@ const (
 type ReviewClient interface {
 	AddReview(ctx context.Context, in *AddReviewRequest, opts ...grpc.CallOption) (*AddReviewResponse, error)
 	GetReviews(ctx context.Context, in *GetReviewsRequest, opts ...grpc.CallOption) (*GetReviewsResponse, error)
+	GetTop10Products(ctx context.Context, in *GetTop10ProductsRequest, opts ...grpc.CallOption) (*GetTop10ProductsResponse, error)
 	UpdateReviews(ctx context.Context, in *UpdateReviewRequest, opts ...grpc.CallOption) (*UpdateReviewResponse, error)
 }
 
@@ -61,6 +63,16 @@ func (c *reviewClient) GetReviews(ctx context.Context, in *GetReviewsRequest, op
 	return out, nil
 }
 
+func (c *reviewClient) GetTop10Products(ctx context.Context, in *GetTop10ProductsRequest, opts ...grpc.CallOption) (*GetTop10ProductsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTop10ProductsResponse)
+	err := c.cc.Invoke(ctx, Review_GetTop10Products_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *reviewClient) UpdateReviews(ctx context.Context, in *UpdateReviewRequest, opts ...grpc.CallOption) (*UpdateReviewResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UpdateReviewResponse)
@@ -77,6 +89,7 @@ func (c *reviewClient) UpdateReviews(ctx context.Context, in *UpdateReviewReques
 type ReviewServer interface {
 	AddReview(context.Context, *AddReviewRequest) (*AddReviewResponse, error)
 	GetReviews(context.Context, *GetReviewsRequest) (*GetReviewsResponse, error)
+	GetTop10Products(context.Context, *GetTop10ProductsRequest) (*GetTop10ProductsResponse, error)
 	UpdateReviews(context.Context, *UpdateReviewRequest) (*UpdateReviewResponse, error)
 	mustEmbedUnimplementedReviewServer()
 }
@@ -93,6 +106,9 @@ func (UnimplementedReviewServer) AddReview(context.Context, *AddReviewRequest) (
 }
 func (UnimplementedReviewServer) GetReviews(context.Context, *GetReviewsRequest) (*GetReviewsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetReviews not implemented")
+}
+func (UnimplementedReviewServer) GetTop10Products(context.Context, *GetTop10ProductsRequest) (*GetTop10ProductsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTop10Products not implemented")
 }
 func (UnimplementedReviewServer) UpdateReviews(context.Context, *UpdateReviewRequest) (*UpdateReviewResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateReviews not implemented")
@@ -154,6 +170,24 @@ func _Review_GetReviews_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Review_GetTop10Products_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTop10ProductsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReviewServer).GetTop10Products(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Review_GetTop10Products_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReviewServer).GetTop10Products(ctx, req.(*GetTop10ProductsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Review_UpdateReviews_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateReviewRequest)
 	if err := dec(in); err != nil {
@@ -186,6 +220,10 @@ var Review_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetReviews",
 			Handler:    _Review_GetReviews_Handler,
+		},
+		{
+			MethodName: "GetTop10Products",
+			Handler:    _Review_GetTop10Products_Handler,
 		},
 		{
 			MethodName: "UpdateReviews",

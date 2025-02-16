@@ -34,6 +34,15 @@ message GetReviewsResponse {
     repeated Reviews reviews = 1;
 }
 
+message LeaderBoard{
+    string product_id = 1;
+    float score = 2;
+}
+message GetTop10ProductsRequest{}
+message GetTop10ProductsResponse{
+    repeated LeaderBoard leaderboard = 1;
+}
+
 message UpdateReviewRequest {}
 
 message UpdateReviewResponse {}
@@ -45,5 +54,6 @@ message DeleteReviewResponse {}
 service Review {
     rpc AddReview (AddReviewRequest) returns (AddReviewResponse){}
     rpc GetReviews(GetReviewsRequest) returns (GetReviewsResponse){}
+    rpc GetTop10Products(GetTop10ProductsRequest) returns (GetTop10ProductsResponse){}
     rpc UpdateReviews(UpdateReviewRequest) returns (UpdateReviewResponse){}
 }
