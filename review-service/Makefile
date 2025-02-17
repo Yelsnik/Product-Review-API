@@ -22,6 +22,9 @@ mock:
 	mockgen -package mockcl -destination clients/mock/client.go review-service/clients Client
 	mockgen -package mocklb -destination leaderboard/mock/leaderboard.go review-service/leaderboard Leaderboard
 
+test:
+	go test -v -cover ./...
+
 sqlc:
 	sqlc generate
 
