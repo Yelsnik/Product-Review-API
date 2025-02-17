@@ -3,6 +3,7 @@ syntax = "proto3";
 package review;
 
 import "google/protobuf/timestamp.proto";
+import "product_service.proto";
 
 option go_package = "review-service/review";
 
@@ -37,6 +38,7 @@ message GetReviewsResponse {
 message LeaderBoard{
     string product_id = 1;
     float score = 2;
+    ProductDetails product_details = 3;
 }
 message GetTop10ProductsRequest{}
 message GetTop10ProductsResponse{
