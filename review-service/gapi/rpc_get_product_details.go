@@ -2,7 +2,6 @@ package gapi
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"review-service/review"
 	"review-service/val"
@@ -12,13 +11,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type ResponseDetails struct {
-	Status     string      `json:"status"`
-	RequestId  string      `json:"request_id"`
-	Parameters any         `json:"parameters"`
-	Data       DataDetails `json:"data"`
-}
-
 func (server *Server) GetProductDetails(ctx context.Context, req *review.GetProductDetailsRequest) (*review.GetProductDetailsResponse, error) {
 
 	violations := validateGetProductDetailsRequest(req)
@@ -26,17 +18,14 @@ func (server *Server) GetProductDetails(ctx context.Context, req *review.GetProd
 		return nil, invalidArgumentError(violations)
 	}
 
-	resp, err := server.helpers.GetAmazonProductDetails(req.GetAsin(), req.GetCountry())
+	res, err := server.helpers.GetAmazonProductDetails(req.GetAsin(), req.GetCountry())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get amazon product: %s", err)
 	}
 
-	var result ResponseDetails
-	if err := json.Unmarshal(resp.Body(), &result); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to unmarshal response: %s", err)
-	}
+	fmt.Println(res)
 
-	fmt.Println(result.Data)
+	result := *res
 
 	response := &review.GetProductDetailsResponse{
 		Product: &review.ProductDetails{

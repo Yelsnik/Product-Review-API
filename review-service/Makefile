@@ -16,6 +16,11 @@ migratedown:
 new_migration:
 	migrate create -ext sql -dir db/migration -seq $(name)
 
+mock:
+	mockgen -package mockdb -destination db/mock/store.go review-service/db/sqlc Store
+	mockgen -package mockhlp -destination helpers/mock/helpers.go review-service/helpers Helpers
+	mockgen -package mockcl -destination clients/mock/client.go review-service/clients Client
+	mockgen -package mocklb -destination leaderboard/mock/leaderboard.go review-service/leaderboard Leaderboard
 
 sqlc:
 	sqlc generate

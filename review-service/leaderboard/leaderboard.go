@@ -2,6 +2,8 @@ package leaderboard
 
 import (
 	"context"
+	"review-service/helpers"
+	"review-service/review"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -16,6 +18,7 @@ type LeaderboardEntry struct {
 type Leaderboard interface {
 	UpdateLeaderBoard(ctx context.Context, productId string, score float64) error
 	GetTopProducts(ctx context.Context, limit int64) ([]LeaderboardEntry, error)
+	GetProductdetails(ctx context.Context, leaderboard []LeaderboardEntry, helper helpers.Helpers) (*review.GetTop10ProductsResponse, error)
 }
 
 type LeaderboardClient struct {

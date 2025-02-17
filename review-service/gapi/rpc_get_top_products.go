@@ -15,19 +15,9 @@ func (server *Server) GetTopProducts(ctx context.Context, req *review.GetTop10Pr
 		return nil, status.Errorf(codes.Internal, "failed to get products from leaderboard: %s", err)
 	}
 
-	var lb []*review.LeaderBoard
-
-	for _, v := range leaderboard {
-		entry := &review.LeaderBoard{
-			ProductId: v.ProductId,
-			Score:     float32(v.Score),
-		}
-
-		lb = append(lb, entry)
-	}
-
-	response := &review.GetTop10ProductsResponse{
-		Leaderboard: lb,
+	response, err := server.leaderboard.GetProductdetails(ctx, leaderboard, server.helpers)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get product details: %s", err)
 	}
 
 	return response, nil
