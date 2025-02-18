@@ -29,8 +29,8 @@ jobs:
           review_changed=$(git diff --name-only HEAD^ HEAD -- review-service/ | wc -l)
           nlp_changed=$(git diff --name-only HEAD^ HEAD -- nlp-service/ | wc -l)
 
-          echo "review=$([ $review_changed -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "nlp=$([ $nlp_changed -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "review=$([ $review_service -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "nlp=$([ $nlp_service -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
   # test for review service
   test-review:
