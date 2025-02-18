@@ -12,7 +12,8 @@ import math
 # # Add it to sys.path
 # sys.path.append(nlp_path)
 
-
+# from nlp import sentiment_service_pb2_grpc as nlp
+# from nlp import sentiment_service_pb2 as sentiment
 
 def analyze_textblob(text):
     analysis = TextBlob(text)

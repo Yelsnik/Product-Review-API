@@ -9,6 +9,7 @@ on:
       - "main"
     paths:
       - "review-service/**"
+      - "nlp-service/**"
 
 jobs:
   # detect changes
@@ -16,27 +17,26 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       review-service: ${{ steps.changes.outputs.review-service }}
-      service-name: ${{ steps.changes.outputs.service-name }}
+      nlp-service: ${{ steps.changes.outputs.nlp-service }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Detect changes
         id: changes
         run: |
-          if git diff --quiet HEAD^ HEAD -- review-service/; then
-             echo "review-service=false" >> $GITHUB_OUTPUT
-           else
-             echo "review-service=true" >> $GITHUB_OUTPUT
-           fi
-           echo "service-name=review" >> $GITHUB_OUTPUT
+          review_changed=$(git diff --name-only HEAD^ HEAD -- review-service/ | wc -l)
+          nlp_changed=$(git diff --name-only HEAD^ HEAD -- nlp-service/ | wc -l)
+
+          echo "review=$([ $review_changed -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "nlp=$([ $nlp_changed -gt 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
   # test for review service
-  test:
+  test-review:
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.service-name != ''
+    if: needs.detect-changes.outputs.review-service != 'true'
     env:
-      SERVICE_NAME: ${{ needs.detect-changes.outputs.service-name }}
+      SERVICE_NAME: "review"
 
     # Service containers to run with `container-job`
     services:
@@ -82,12 +82,40 @@ jobs:
           cd ${{env.SERVICE_NAME}}-service
           make test
 
+  test-nlp:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.nlp-service == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies and test
+        run: |
+          cd nlp-service
+          pip install -r requirements.txt
+          make test
+
   deploy-review-service:
     runs-on: ubuntu-latest
     needs:
       - detect-changes
-      - test
+      - test-review
     if: needs.detect-changes.outputs.review-service == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+  deploy-nlp-service:
+    runs-on: ubuntu-latest
+    needs: 
+      - detect-changes
+      - test-nlp
+    if: needs.detect-changes.outputs.nlp-service == 'true'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
