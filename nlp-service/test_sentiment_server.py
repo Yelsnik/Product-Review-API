@@ -21,7 +21,7 @@ class TestSentimentServer(unittest.TestCase):
         self.assertIsInstance(response, SentimentResponse)
         self.assertAlmostEqual(response.score, 0.8, places=6)
         self.assertEqual(response.label, "positive")
-        mock_analyzer.assert_called_once_with(mock_request)
+        mock_analyzer.assert_called_once_with(mock_request.text)
         # self.context.set_code.assert_not_called()
         # self.context.set_details.assert_not_called()
 
