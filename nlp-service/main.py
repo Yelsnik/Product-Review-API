@@ -4,14 +4,13 @@ from concurrent import futures
 from sentiment_pb2_grpc import add_SentimentAnalysisServicer_to_server 
 import signal
 import sys
-from utils import config
 
 def grpc_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_SentimentAnalysisServicer_to_server(SentimentServer(), server)
-    server.add_insecure_port(config.grpc_address)
+    server.add_insecure_port("0.0.0.0:5000")
     server.start()
-    print(f"NLP Service running on port {config.grpc_address}")
+    print("NLP Service running on port 0.0.0.0:5000")
 
      # Handle graceful shutdown on SIGINT (Ctrl+C)
     def handle_shutdown(sig, frame):
