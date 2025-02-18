@@ -20,6 +20,8 @@ jobs:
       nlp-service: ${{ steps.changes.outputs.nlp-service }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Detect changes
         id: changes
