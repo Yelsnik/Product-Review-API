@@ -50,7 +50,7 @@ func main() {
 	h := helpers.NewHelper(config)
 
 	// create grpc conn
-	nlpconn, err := grpc.NewClient("0.0.0.0:50052", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	nlpconn, err := grpc.NewClient("switchyard.proxy.rlwy.net:21251", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to nlp service: %v", err)
 	}
