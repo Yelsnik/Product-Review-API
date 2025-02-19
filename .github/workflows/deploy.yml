@@ -69,7 +69,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Fetch Railway Environment Variables
-        run: railway env list -- --service=${{secrets.RAILWAY_REVIEW_SERVICE_ID}} > review-service/app.env
+        run: railway variables -s=review-service --json | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > review-service/app.env
 
       - name: Install golang-migrate
         run: |
