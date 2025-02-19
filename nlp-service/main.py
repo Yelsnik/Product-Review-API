@@ -1,13 +1,22 @@
 from server import SentimentServer
 import grpc
 from concurrent import futures
+import sentiment_pb2
 from sentiment_pb2_grpc import add_SentimentAnalysisServicer_to_server 
+from grpc_reflection.v1alpha import reflection 
 import signal
 import sys
 
 def grpc_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_SentimentAnalysisServicer_to_server(SentimentServer(), server)
+
+    SERVICE_NAMES = (
+        sentiment_pb2.DESCRIPTOR.services_by_name["SentimentAnalysis"].full_name,
+        reflection.SERVICE_NAME,  # Required for reflection to work
+    )
+    reflection.enable_server_reflection(SERVICE_NAMES, server)
+
     server.add_insecure_port("0.0.0.0:5000")
     server.start()
     print("NLP Service running on port 0.0.0.0:5000")
