@@ -39,6 +39,7 @@ jobs:
     if: needs.detect-changes.outputs.review-service == 'true'
     env:
       SERVICE_NAME: "review"
+      RAILWAY_TOKEN: ${{secrets.RAILWAY_TOKEN}}
 
     # Service containers to run with `container-job`
     services:
@@ -65,9 +66,6 @@ jobs:
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
-
-      - name: Authenticate Railway
-        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Fetch Railway Environment Variables
         run: railway env list --service=${{secrets.RAILWAY_REVIEW_SERVICE_ID}} > review-service/app.env
@@ -126,6 +124,8 @@ jobs:
 
       - name: Deploy Review Service to Railway
         run: railway up --service=${{secrets.RAILWAY_REVIEW_SERVICE_ID}}
+        env:
+          RAILWAY_TOKEN: ${{secrets.RAILWAY_TOKEN}}
 
   deploy-nlp-service:
     runs-on: ubuntu-latest
