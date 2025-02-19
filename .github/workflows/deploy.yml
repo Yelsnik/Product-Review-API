@@ -40,6 +40,7 @@ jobs:
     env:
       SERVICE_NAME: "review"
       RAILWAY_TOKEN: ${{secrets.RAILWAY_TOKEN}}
+      SERVICE: ${{secrets.RAILWAY_REVIEW_SERVICE_ID}}
 
     # Service containers to run with `container-job`
     services:
@@ -68,7 +69,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Fetch Railway Environment Variables
-        run: railway env list --service=${{secrets.RAILWAY_REVIEW_SERVICE_ID}} > review-service/app.env
+        run: railway env list -- --service=${{env.SERVICE}} > review-service/app.env
 
       - name: Install golang-migrate
         run: |
