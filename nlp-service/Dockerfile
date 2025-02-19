@@ -29,7 +29,6 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Copy application files
-COPY app.env .
 COPY . .
 
 EXPOSE 5000
