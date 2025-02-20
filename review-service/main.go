@@ -40,9 +40,9 @@ func main() {
 
 	// connect to redis
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "redis-18521.c15.us-east-1-4.ec2.redns.redis-cloud.com:18521",
-		Password: "TyXZPvR60x4WxdVuV2dYBEttUx4xQNUK", // no password set
-		DB:       0,                                  // use default DB
+		Addr:     config.RedisAddress,
+		Password: config.RedisPassword,
+		DB:       0,                                  
 	})
 
 	//
@@ -73,7 +73,7 @@ func main() {
 
 	leaderboard := leaderboard.NewLeaderBoardClient(redisClient)
 
-	runDBmigration(config.MigrationURL, config.DBSource)
+	runDBmigration("file://db/migration", config.DBSource)
 	store := db.NewStore(conn)
 
 	grpcServer(config, store, h, client, leaderboard)
@@ -110,7 +110,7 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 }
 
 func runDBmigration(migrationURL, dbSource string) {
-	fmt.Println(migrationURL, dbSource)
+	fmt.Println(migrationURL)
 	migration, err := migrate.New(migrationURL, dbSource)
 	if err != nil {
 		log.Fatal("cannot create new migrate instance:", err)
