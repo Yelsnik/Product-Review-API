@@ -29,6 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
+	fmt.Println(config.DBSource)
 
 	// connect to database
 	conn, err := pgxpool.New(context.Background(), config.DBSource)
