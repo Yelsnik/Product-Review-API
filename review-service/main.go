@@ -29,7 +29,6 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
-	fmt.Println(config)
 
 	// connect to database
 	conn, err := pgxpool.New(context.Background(), config.DBSource)
@@ -111,6 +110,7 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 }
 
 func runDBmigration(migrationURL, dbSource string) {
+	fmt.Println(migrationURL, dbSource)
 	migration, err := migrate.New(migrationURL, dbSource)
 	if err != nil {
 		log.Fatal("cannot create new migrate instance:", err)
