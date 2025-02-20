@@ -33,7 +33,9 @@ func LoadConfig(path string) (config Config, err error) {
 	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	dbsource := viper.GetString("DB_SOURCE")
+	redis := viper.GetString("REDIS")
 	fmt.Println(dbsource)
+	fmt.Println(redis)
 
 	err = viper.Unmarshal(&config)
 	return
