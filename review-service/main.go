@@ -33,13 +33,19 @@ func main() {
 		log.Fatal("could not connect", err)
 	}
 
-	// connect to redis
-	opts, err := redis.ParseURL(config.Redis)
-	if err != nil {
-		log.Fatal("could not connect to redis", err)
-	}
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     config.RedisAddress,
+		Password: config.RedisPassword, // no password set
+		DB:       0,                    // use default DB
+	})
 
-	redisClient := redis.NewClient(opts)
+	// // connect to redis
+	// opts, err := redis.ParseURL(config.Redis)
+	// if err != nil {
+	// 	log.Fatal("could not connect to redis: ", err)
+	// }
+
+	// redisClient := redis.NewClient(opts)
 	pong, err := redisClient.Ping(context.Background()).Result()
 	if err != nil {
 		log.Fatal("Error connecting to Redis:", err)

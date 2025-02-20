@@ -1,8 +1,6 @@
 package util
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 )
 
@@ -14,6 +12,9 @@ type Config struct {
 	RapidAPISearchUrl  string `mapstructure:"RAPID_API_SEARCH_URL"`
 	RapidAPIDetailsUrl string `mapstructure:"RAPID_API_DETAILS_URL"`
 	Redis              string `mapstructure:"REDIS"`
+	RedisAddress       string `mapstructure:"REDIS_ADDRESS"`
+	RedisPassword      string `mapstructure:"REDIS_PASSWORD"`
+	RedisDB            string `mapstructure:"REDIS_DB"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -32,10 +33,10 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.AutomaticEnv()
 	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	dbsource := viper.GetString("DB_SOURCE")
-	redis := viper.GetString("REDIS")
-	fmt.Println(dbsource)
-	fmt.Println(redis)
+	// dbsource := viper.GetString("DB_SOURCE")
+	// redis := viper.GetString("REDIS")
+	// fmt.Println(dbsource)
+	// fmt.Println(redis)
 
 	err = viper.Unmarshal(&config)
 	return

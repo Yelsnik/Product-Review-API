@@ -8,14 +8,14 @@ services:
       - POSTGRES_DB=review_service
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U root -d review_service"]
-      interval: 5s
-      timeout: 1s
+      interval: 10s
+      timeout: 5s
       retries: 10
 
   redis:
     image: redis
     ports:
-      - 6379:6379
+      - 18521:6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -31,8 +31,8 @@ services:
     ports:
       - "9090:9090"
     environment:
-      - DB_SOURCE=postgresql://root:mahanta@postgres:5432/review_service?sslmode=disable
-      - REDIS=redis://localhost:6379
+      - DB_SOURCE=postgresql://root:mahanta@postgres:5432/review_service
+      - REDIS=redis://default:TyXZPvR60x4WxdVuV2dYBEttUx4xQNUK@redis-18521.c15.us-east-1-4.ec2.redns.redis-cloud.com:18521
     depends_on:
       postgres:
         condition: service_healthy
