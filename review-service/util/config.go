@@ -1,11 +1,14 @@
 package util
 
 import (
+	"fmt"
+
 	"github.com/spf13/viper"
 )
 
 type Config struct {
 	DBSource           string `mapstructure:"DB_SOURCE"`
+	MigrationURL       string `mapstructure:"MIGRATION_URL"`
 	GRPCServerAddress  string `mapstructure:"GRPC_SERVER_ADDRESS"`
 	RapidAPIHost       string `mapstructure:"RAPID_API_HOST"`
 	RapidAPIKey        string `mapstructure:"RAPID_API_KEY"`
@@ -34,9 +37,9 @@ func LoadConfig(path string) (config Config, err error) {
 	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// dbsource := viper.GetString("DB_SOURCE")
-	// redis := viper.GetString("REDIS")
+	redis := viper.GetString("REDIS_ADDRESS")
 	// fmt.Println(dbsource)
-	// fmt.Println(redis)
+	fmt.Println(redis)
 
 	err = viper.Unmarshal(&config)
 	return

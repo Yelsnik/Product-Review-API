@@ -13,6 +13,9 @@ import (
 	"review-service/review"
 	"review-service/util"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 	"google.golang.org/grpc"
@@ -33,13 +36,16 @@ func main() {
 		log.Fatal("could not connect", err)
 	}
 
+	// run db migrations
+
+	// connect to redis
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     config.RedisAddress,
 		Password: config.RedisPassword, // no password set
 		DB:       0,                    // use default DB
 	})
 
-	// // connect to redis
+	//
 	// opts, err := redis.ParseURL(config.Redis)
 	// if err != nil {
 	// 	log.Fatal("could not connect to redis: ", err)
@@ -67,6 +73,7 @@ func main() {
 
 	leaderboard := leaderboard.NewLeaderBoardClient(redisClient)
 
+	runDBmigration(config.MigrationURL, config.DBSource)
 	store := db.NewStore(conn)
 
 	grpcServer(config, store, h, client, leaderboard)
@@ -100,4 +107,17 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 	if err != nil {
 		log.Fatal("cannot start grpc server:", err)
 	}
+}
+
+func runDBmigration(migrationURL, dbSource string) {
+	migration, err := migrate.New(migrationURL, dbSource)
+	if err != nil {
+		log.Fatal("cannot create new migrate instance:", err)
+	}
+
+	if err = migration.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("failed to run migrate up:", err)
+	}
+
+	log.Println("db migrated succesfully!")
 }
