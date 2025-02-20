@@ -42,7 +42,7 @@ func main() {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     config.RedisAddress,
 		Password: config.RedisPassword,
-		DB:       0,                                  
+		DB:       0,
 	})
 
 	//
@@ -110,7 +110,6 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 }
 
 func runDBmigration(migrationURL, dbSource string) {
-	fmt.Println(migrationURL)
 	migration, err := migrate.New(migrationURL, dbSource)
 	if err != nil {
 		log.Fatal("cannot create new migrate instance:", err)
