@@ -40,8 +40,8 @@ func main() {
 
 	// connect to redis
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     config.RedisAddress,
-		Password: config.RedisPassword, // no password set
+		Addr:     "redis-18521.c15.us-east-1-4.ec2.redns.redis-cloud.com:18521",
+		Password: "TyXZPvR60x4WxdVuV2dYBEttUx4xQNUK", // no password set
 		DB:       0,                    // use default DB
 	})
 

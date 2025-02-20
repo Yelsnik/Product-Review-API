@@ -1,8 +1,6 @@
 package util
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 )
 
@@ -37,9 +35,9 @@ func LoadConfig(path string) (config Config, err error) {
 	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	// dbsource := viper.GetString("DB_SOURCE")
-	redis := viper.GetString("REDIS_ADDRESS")
-	// fmt.Println(dbsource)
-	fmt.Println(redis)
+	// redis := viper.GetString("REDIS_ADDRESS")
+	// // fmt.Println(dbsource)
+	// fmt.Println(redis)
 
 	err = viper.Unmarshal(&config)
 	return
