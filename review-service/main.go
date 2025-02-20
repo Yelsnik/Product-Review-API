@@ -29,7 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot load config:", err)
 	}
-	fmt.Println(config.DBSource)
+	fmt.Println(config)
 
 	// connect to database
 	conn, err := pgxpool.New(context.Background(), config.DBSource)
@@ -43,7 +43,7 @@ func main() {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     "redis-18521.c15.us-east-1-4.ec2.redns.redis-cloud.com:18521",
 		Password: "TyXZPvR60x4WxdVuV2dYBEttUx4xQNUK", // no password set
-		DB:       0,                    // use default DB
+		DB:       0,                                  // use default DB
 	})
 
 	//

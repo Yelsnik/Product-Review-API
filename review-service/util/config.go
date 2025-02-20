@@ -1,6 +1,8 @@
 package util
 
 import (
+	"strings"
+
 	"github.com/spf13/viper"
 )
 
@@ -32,12 +34,19 @@ func LoadConfig(path string) (config Config, err error) {
 	}
 
 	viper.AutomaticEnv()
-	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	// dbsource := viper.GetString("DB_SOURCE")
-	// redis := viper.GetString("REDIS_ADDRESS")
-	// // fmt.Println(dbsource)
-	// fmt.Println(redis)
+	// Explicitly bind each field to its environment variable
+	keys := []string{
+		"DB_SOURCE", "MIGRATION_URL", "GRPC_SERVER_ADDRESS",
+		"RAPID_API_HOST", "RAPID_API_KEY", "RAPID_API_SEARCH_URL",
+		"RAPID_API_DETAILS_URL", "REDIS", "REDIS_ADDRESS",
+		"REDIS_PASSWORD", "REDIS_DB",
+	}
+
+	for _, key := range keys {
+		_ = viper.BindEnv(key)
+	}
 
 	err = viper.Unmarshal(&config)
 	return
