@@ -1,7 +1,7 @@
 package util
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/spf13/viper"
 )
@@ -21,16 +21,6 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	// viper.BindEnv("DBSource", "DB_SOURCE")
-	// viper.BindEnv("GRPCServerAddress", "GRPC_SERVER_ADDRESS")
-	// viper.BindEnv("RapidAPIHost", "RAPID_API_HOST")
-	// viper.BindEnv("RapidAPIKey", "RAPID_API_KEY")
-	// viper.BindEnv("RapidAPISearchUrl", "RAPID_API_SEARCH_URL")
-	// viper.BindEnv("RapidAPIDetailsUrl", "RAPID_API_DETAILS_URL")
-	// viper.BindEnv("Redis", "REDIS")
-
 	err = viper.ReadInConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
@@ -38,6 +28,12 @@ func LoadConfig(path string) (config Config, err error) {
 		}
 		// return
 	}
+
+	viper.AutomaticEnv()
+	// viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	dbsource := viper.GetString("DB_SOURCE")
+	fmt.Println(dbsource)
 
 	err = viper.Unmarshal(&config)
 	return
