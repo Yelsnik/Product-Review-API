@@ -120,14 +120,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
-
-      - name: Deploy Review Service to Railway
-        run: railway up --service=review-service
-        env:
-          RAILWAY_TOKEN: ${{secrets.RAILWAY_TOKEN}}
-
   deploy-nlp-service:
     runs-on: ubuntu-latest
     needs:
