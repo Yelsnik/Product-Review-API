@@ -70,7 +70,7 @@ func NewNullInt(i int64) sql.NullInt64 {
 }
 
 func NewNullBool(i bool) sql.NullBool {
-	return sql.NullBool{Bool: i, Valid: i != false}
+	return sql.NullBool{Bool: i, Valid: i}
 }
 
 func RandomCurrency() string {
