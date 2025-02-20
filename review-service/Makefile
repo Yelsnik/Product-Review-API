@@ -11,7 +11,7 @@ migrateup:
 	migrate -path db/migration -database "postgresql://root:mahanta@localhost:5432/review_service?sslmode=disable" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "postgresql://root:mahanta@localhost:5432/review_service?sslmode=disable" -verbose down
+	migrate -path db/migration -database "postgresql://root:2DHKOABiwRKoKVgsYnLHa0yoOOyHiHoR@dpg-cure72qj1k6c73b1gscg-a.oregon-postgres.render.com/review_service_ggxp" -verbose down
 
 new_migration:
 	migrate create -ext sql -dir db/migration -seq $(name)
