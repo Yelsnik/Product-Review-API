@@ -1,8 +1,12 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { ProductClient } from 'pb/product_service';
-import { AddReviewRequest, GetReviewsRequest, ReviewClient } from 'pb/review_service';
-import { lastValueFrom } from 'rxjs';
+import { GetProductDetailsRequest, GetProductsRequest, ProductClient } from 'pb/product_service';
+import {
+  AddReviewRequest,
+  GetReviewsRequest,
+  ReviewClient,
+} from 'pb/review_service';
+import { last, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class ReviewsService implements OnModuleInit {
@@ -28,11 +32,27 @@ export class ReviewsService implements OnModuleInit {
     return review;
   }
 
-  async getReviews(request: GetReviewsRequest){
-    const result = this.reviewService.getReviews(request)
+  async getReviews(request: GetReviewsRequest) {
+    const result = this.reviewService.getReviews(request);
 
-    const reviews = await lastValueFrom(result)
+    const reviews = await lastValueFrom(result);
 
-    return reviews.reviews
+    return reviews.reviews;
+  }
+
+  async getProducts(request: GetProductsRequest) {
+    const result = this.productService.getProducts(request)
+
+    const products = await lastValueFrom(result)
+
+    return products.product
+  }
+
+  async getProductDetails(request: GetProductDetailsRequest){
+    const result = this.productService.getProductDetails(request)
+
+    const product = await lastValueFrom(result)
+
+    return product.product
   }
 }
