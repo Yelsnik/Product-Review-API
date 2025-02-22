@@ -68,3 +68,5 @@ func (h *Helper) GetAmazonProductDetails(asin, country string) (*ResponseDetails
 
 	return &result, err
 }
+
+

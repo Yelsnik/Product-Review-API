@@ -17,7 +17,8 @@ INSERT INTO reviews (
   product_id, num_of_reviews
 ) VALUES (
   $1, $2
-) RETURNING id, product_id, num_of_reviews
+) 
+RETURNING id, product_id, num_of_reviews
 `
 
 type CreateReviewParams struct {

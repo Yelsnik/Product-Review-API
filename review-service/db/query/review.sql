@@ -3,7 +3,8 @@ INSERT INTO reviews (
   product_id, num_of_reviews
 ) VALUES (
   $1, $2
-) RETURNING *;
+) 
+RETURNING *;
 
 -- name: GetReview :one
 SELECT * FROM reviews

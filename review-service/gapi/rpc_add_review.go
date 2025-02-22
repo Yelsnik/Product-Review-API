@@ -2,9 +2,12 @@ package gapi
 
 import (
 	"context"
+	"fmt"
 	db "review-service/db/sqlc"
+	"review-service/nlp"
 	"review-service/review"
 	"review-service/val"
+	"sync"
 
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -18,24 +21,41 @@ func (server *Server) AddReview(ctx context.Context, req *review.AddReviewReques
 		return nil, invalidArgumentError(violations)
 	}
 
+	wg := &sync.WaitGroup{}
+	wg.Add(2)
+
+	errChan := make(chan error, 2)
+	var sentiment *nlp.SentimentResponse
+
 	// check the product id
 	country := "US"
 
-	_, err := server.helpers.GetAmazonProductDetails(req.GetProductId(), country)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid id: %s", err)
-	}
+	go func() {
+		defer wg.Done()
+		_, err := server.helpers.GetAmazonProductDetails(req.GetProductId(), country)
+
+		errChan <- err
+	}()
 
 	// analyze the sentiment
-	sentiment, err := server.client.Analyze(ctx, req.GetReview())
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to analyze the review: %s", err)
-	}
+	go func() {
+		defer wg.Done()
+		s, err := server.client.Analyze(ctx, req.GetReview())
 
-	// update leaderboard
-	err = server.leaderboard.UpdateLeaderBoard(ctx, req.GetProductId(), float64(sentiment.Score))
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update leaderboard: %s", err)
+		errChan <- err
+		sentiment = s
+		fmt.Println(sentiment)
+	}()
+
+	fmt.Println(sentiment)
+
+	// Wait for goroutines and check for errors
+	wg.Wait()
+	close(errChan)
+	for err := range errChan {
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "%s", err)
+		}
 	}
 
 	// add review to the db
@@ -54,35 +74,55 @@ func (server *Server) AddReview(ctx context.Context, req *review.AddReviewReques
 				return nil, status.Errorf(codes.Internal, "failed to create review in the db: %s", err)
 			}
 
+			params := AddReviewResponseParams{
+				server:    server,
+				sentiment: sentiment,
+				getreview: req.GetReview(),
+				r:         r,
+			}
+
 			// add review message
-			_, err = server.store.AddReviewTx(ctx, db.CreateReviewMessageParams{
-				Review:   req.GetReview(),
-				Score:    float64(sentiment.Score),
-				Label:    sentiment.Label,
-				ReviewID: r.ID,
-			})
-			if err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to add review message to the db: %s", err)
-			}
-
-			response := &review.AddReviewResponse{
-				Message: "successfully added review",
-			}
-
-			return response, nil
+			return AddReviewResponse(ctx, params)
 		}
 		return nil, status.Errorf(codes.Internal, "failed to get review: %s", err)
 	}
 
+	params := AddReviewResponseParams{
+		server:    server,
+		sentiment: sentiment,
+		getreview: req.GetReview(),
+		r:         r,
+	}
+
 	// add review message
-	_, err = server.store.AddReviewTx(ctx, db.CreateReviewMessageParams{
-		Review:   req.GetReview(),
-		Score:    float64(sentiment.Score),
-		Label:    sentiment.Label,
-		ReviewID: r.ID,
+	return AddReviewResponse(ctx, params)
+}
+
+type AddReviewResponseParams struct {
+	server    *Server
+	sentiment *nlp.SentimentResponse
+	getreview string
+	getproductid string
+	r         db.Review
+}
+
+func AddReviewResponse(ctx context.Context, params AddReviewResponseParams) (*review.AddReviewResponse, error) {
+
+	// add review message
+	_, err := params.server.store.AddReviewTx(ctx, db.CreateReviewMessageParams{
+		Review:   params.getreview,
+		Score:    float64(params.sentiment.Score),
+		Label:    params.sentiment.Label,
+		ReviewID: params.r.ID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to add review message to the db: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to add review to database: %s", err)
+	}
+
+	// update leaderboard
+	err = params.server.leaderboard.UpdateLeaderBoard(ctx, params.getproductid, float64(params.sentiment.Score))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update leaderboard: %s", err)
 	}
 
 	response := &review.AddReviewResponse{
@@ -90,6 +130,7 @@ func (server *Server) AddReview(ctx context.Context, req *review.AddReviewReques
 	}
 
 	return response, nil
+
 }
 
 func validateAddReviewReq(req *review.AddReviewRequest) (violations []*errdetails.BadRequest_FieldViolation) {
