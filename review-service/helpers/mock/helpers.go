@@ -5,6 +5,7 @@
 package mockhlp
 
 import (
+	context "context"
 	reflect "reflect"
 	helpers "review-service/helpers"
 
@@ -35,18 +36,18 @@ func (m *MockHelpers) EXPECT() *MockHelpersMockRecorder {
 }
 
 // GetAmazonProductDetails mocks base method.
-func (m *MockHelpers) GetAmazonProductDetails(arg0, arg1 string) (*helpers.ResponseDetails, error) {
+func (m *MockHelpers) GetAmazonProductDetails(arg0 context.Context, arg1, arg2 string) (*helpers.ResponseDetails, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAmazonProductDetails", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetAmazonProductDetails", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*helpers.ResponseDetails)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAmazonProductDetails indicates an expected call of GetAmazonProductDetails.
-func (mr *MockHelpersMockRecorder) GetAmazonProductDetails(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockHelpersMockRecorder) GetAmazonProductDetails(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAmazonProductDetails", reflect.TypeOf((*MockHelpers)(nil).GetAmazonProductDetails), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAmazonProductDetails", reflect.TypeOf((*MockHelpers)(nil).GetAmazonProductDetails), arg0, arg1, arg2)
 }
 
 // GetAmazonProducts mocks base method.

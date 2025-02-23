@@ -59,7 +59,7 @@ func main() {
 	fmt.Println("connected to redis successfully", pong)
 
 	// helpers
-	h := helpers.NewHelper(config)
+	h := helpers.NewHelper(config, redisClient)
 
 	// create grpc conn
 	nlpconn, err := grpc.NewClient("switchyard.proxy.rlwy.net:21251", grpc.WithTransportCredentials(insecure.NewCredentials()))

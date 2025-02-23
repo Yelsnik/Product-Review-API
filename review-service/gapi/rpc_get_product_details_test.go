@@ -42,7 +42,7 @@ func TestGetProductDetailsAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore, helper *mockhlp.MockHelpers) {
 				helper.EXPECT().
-					GetAmazonProductDetails(gomock.Eq(productdetails.Data.Asin), gomock.Eq(productdetails.Data.Country)).
+					GetAmazonProductDetails(gomock.Any(), gomock.Eq(productdetails.Data.Asin), gomock.Eq(productdetails.Data.Country)).
 					Times(1).
 					Return(productdetails, nil)
 			},

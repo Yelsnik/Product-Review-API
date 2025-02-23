@@ -2,6 +2,7 @@ package gapi
 
 import (
 	"context"
+	"fmt"
 	"review-service/review"
 	"review-service/val"
 
@@ -11,6 +12,7 @@ import (
 )
 
 func (server *Server) GetProducts(ctx context.Context, req *review.GetProductsRequest) (*review.GetProductsResponse, error) {
+	fmt.Println("1", req)
 	violations := validateGetProductsReq(req)
 	if violations != nil {
 		return nil, invalidArgumentError(violations)
@@ -43,11 +45,11 @@ func (server *Server) GetProducts(ctx context.Context, req *review.GetProductsRe
 }
 
 func validateGetProductsReq(req *review.GetProductsRequest) (violations []*errdetails.BadRequest_FieldViolation) {
-	if err := val.ValidateString(req.GetPage(), 2, 100); err != nil {
+	if err := val.ValidateString(req.GetPage(), 1, 100); err != nil {
 		violations = append(violations, fielViolation("page", err))
 	}
 
-	if err := val.ValidateString(req.GetCountry(), 2, 100); err != nil {
+	if err := val.ValidateString(req.GetCountry(), 1, 100); err != nil {
 		violations = append(violations, fielViolation("country", err))
 	}
 

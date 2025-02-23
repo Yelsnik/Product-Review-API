@@ -18,7 +18,7 @@ func (server *Server) GetProductDetails(ctx context.Context, req *review.GetProd
 		return nil, invalidArgumentError(violations)
 	}
 
-	res, err := server.helpers.GetAmazonProductDetails(req.GetAsin(), req.GetCountry())
+	res, err := server.helpers.GetAmazonProductDetails(ctx, req.GetAsin(), req.GetCountry())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get amazon product: %s", err)
 	}

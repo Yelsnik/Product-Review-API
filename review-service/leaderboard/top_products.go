@@ -48,7 +48,7 @@ func (l *LeaderboardClient) GetProductdetails(ctx context.Context, leaderboard [
 	errs := make(chan error, len(uncachedProductIDS))
 	for _, productID := range uncachedProductIDS {
 		go func(id string) {
-			details, err := helper.GetAmazonProductDetails(productID, "US") // Your API client
+			details, err := helper.GetAmazonProductDetails(ctx, productID, "US") // Your API client
 			resultchan <- ResponseDetails{
 				Status:     details.Status,
 				RequestId:  details.RequestId,
