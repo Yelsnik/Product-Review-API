@@ -63,10 +63,14 @@ export class ReviewsController {
 
   @Get('products')
   async getProducts(@Query() query: getProductsDTO, @Res() response: Response) {
+    console.log('1', query);
+    const country = query.country.toUpperCase();
     const request: GetProductsRequest = {
       page: query.page.toString(),
-      country: query.country,
+      country: country,
     };
+
+    console.log(request);
 
     const products = await this.reviewsService.getProducts(request);
 
@@ -76,7 +80,7 @@ export class ReviewsController {
     });
   }
 
-  @Get("product-details")
+  @Get('product-details')
   async getProductDetails(
     @Query() query: getProductDetailsDTO,
     @Res() response: Response,

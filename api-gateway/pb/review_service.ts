@@ -8,6 +8,7 @@
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { Timestamp } from "./google/protobuf/timestamp";
+import { ProductDetails } from "./product_service";
 
 export const protobufPackage = "review";
 
@@ -38,6 +39,19 @@ export interface GetReviewsResponse {
   reviews: Reviews[];
 }
 
+export interface LeaderBoard {
+  productId: string;
+  score: number;
+  productDetails: ProductDetails | undefined;
+}
+
+export interface GetTop10ProductsRequest {
+}
+
+export interface GetTop10ProductsResponse {
+  leaderboard: LeaderBoard[];
+}
+
 export interface UpdateReviewRequest {
 }
 
@@ -57,6 +71,8 @@ export interface ReviewClient {
 
   getReviews(request: GetReviewsRequest): Observable<GetReviewsResponse>;
 
+  getTop10Products(request: GetTop10ProductsRequest): Observable<GetTop10ProductsResponse>;
+
   updateReviews(request: UpdateReviewRequest): Observable<UpdateReviewResponse>;
 }
 
@@ -67,6 +83,10 @@ export interface ReviewController {
     request: GetReviewsRequest,
   ): Promise<GetReviewsResponse> | Observable<GetReviewsResponse> | GetReviewsResponse;
 
+  getTop10Products(
+    request: GetTop10ProductsRequest,
+  ): Promise<GetTop10ProductsResponse> | Observable<GetTop10ProductsResponse> | GetTop10ProductsResponse;
+
   updateReviews(
     request: UpdateReviewRequest,
   ): Promise<UpdateReviewResponse> | Observable<UpdateReviewResponse> | UpdateReviewResponse;
@@ -74,7 +94,7 @@ export interface ReviewController {
 
 export function ReviewControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["addReview", "getReviews", "updateReviews"];
+    const grpcMethods: string[] = ["addReview", "getReviews", "getTop10Products", "updateReviews"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("Review", method)(constructor.prototype[method], method, descriptor);

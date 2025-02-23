@@ -107,6 +107,7 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 	if err != nil {
 		log.Fatal("cannot start grpc server:", err)
 	}
+
 }
 
 func runDBmigration(migrationURL, dbSource string) {
