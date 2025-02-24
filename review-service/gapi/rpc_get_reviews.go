@@ -2,6 +2,7 @@ package gapi
 
 import (
 	"context"
+	"fmt"
 	"review-service/review"
 	"review-service/val"
 
@@ -14,6 +15,7 @@ import (
 
 func (server *Server) GetReviews(ctx context.Context, req *review.GetReviewsRequest) (*review.GetReviewsResponse, error) {
 
+	fmt.Println("1", req)
 	violations := validateGetReviewsReq(req)
 	if violations != nil {
 		return nil, invalidArgumentError(violations)
@@ -21,7 +23,7 @@ func (server *Server) GetReviews(ctx context.Context, req *review.GetReviewsRequ
 
 	r, err := server.store.GetReviewByProductID(ctx, req.GetProductId())
 	if err != nil {
-		if err == pgx.ErrNoRows{
+		if err == pgx.ErrNoRows {
 			return nil, status.Errorf(codes.NotFound, "product has no review: %s", err)
 		}
 		return nil, status.Errorf(codes.Internal, "failed to get reviews: %s", err)
