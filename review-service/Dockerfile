@@ -19,7 +19,7 @@ COPY db/migration ./db/migration
 
 RUN chmod +x /app/start.sh
 
-# EXPOSE 6000
+EXPOSE 6000
 
 CMD ["/app/main"]
 # ENTRYPOINT ["/app/start.sh"]

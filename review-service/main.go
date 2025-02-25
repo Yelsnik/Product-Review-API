@@ -95,7 +95,7 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 
 	// start the server to listen to grpc
 	// requests on a specific port
-	listener, err := net.Listen("tcp", config.GRPCServerAddress)
+	listener, err := net.Listen("tcp4", config.GRPCServerAddress)
 	if err != nil {
 		log.Fatal("cannot create listener:", err)
 	}
