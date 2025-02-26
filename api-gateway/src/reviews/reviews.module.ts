@@ -14,7 +14,7 @@ import { ReviewsController } from './reviews.controller';
         options: {
           package: Review,
           protoPath: join(__dirname, '../../protos/review_service.proto'),
-          url: '0.0.0.0:6000',
+          url: 'switchyard.proxy.rlwy.net:35218',
         },
       },
       {
@@ -23,7 +23,7 @@ import { ReviewsController } from './reviews.controller';
         options: {
           package: Review,
           protoPath: join(__dirname, '../../protos/product_service.proto'),
-          url: '0.0.0.0:6000',
+          url: 'switchyard.proxy.rlwy.net:35218',
         },
       },
     ]),

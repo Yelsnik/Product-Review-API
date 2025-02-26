@@ -61,16 +61,13 @@ export class ReviewsController {
     });
   }
 
-  @Get('products')
+  @Get('')
   async getProducts(@Query() query: getProductsDTO, @Res() response: Response) {
-    console.log('1', query);
     const country = query.country.toUpperCase();
     const request: GetProductsRequest = {
       page: query.page.toString(),
       country: country,
     };
-
-    console.log(request);
 
     const products = await this.reviewsService.getProducts(request);
 
