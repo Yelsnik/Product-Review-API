@@ -16,6 +16,9 @@ COPY --from=builder /app/main .
 COPY start.sh .
 COPY wait-for.sh .
 COPY db/migration ./db/migration
+RUN wget -qO /bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/latest/download/grpc_health_probe-linux-amd64 && \
+    chmod +x /bin/grpc_health_probe
+
 
 RUN chmod +x /app/start.sh
 

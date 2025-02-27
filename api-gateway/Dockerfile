@@ -1,3 +1,4 @@
+# Builder stage
 FROM node:23.8-slim AS Builder
 
 WORKDIR /app
@@ -7,6 +8,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+# Production stage
 FROM node:23.8-slim AS PROD
 
 WORKDIR /app

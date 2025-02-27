@@ -21,6 +21,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/health"
 )
 
 func main() {
@@ -92,6 +94,13 @@ func grpcServer(config util.Config, store db.Store, helpers helpers.Helpers, cli
 	review.RegisterReviewServer(grpcServer, server)
 	review.RegisterProductServer(grpcServer, server)
 	reflection.Register(grpcServer)
+
+	// Register gRPC Health Server
+	healthServer := health.NewServer()
+	grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
+
+	// Set health status to SERVING
+	healthServer.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
 
 	// start the server to listen to grpc
 	// requests on a specific port

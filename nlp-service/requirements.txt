@@ -8,6 +8,7 @@ filelock==3.17.0
 fonttools==4.56.0
 fsspec==2025.2.0
 grpcio==1.70.0
+grpcio-health-checking==1.70.0
 grpcio-reflection==1.70.0
 grpcio-tools==1.70.0
 huggingface-hub==0.28.1

@@ -6,6 +6,7 @@ from sentiment_pb2_grpc import add_SentimentAnalysisServicer_to_server
 from grpc_reflection.v1alpha import reflection 
 import signal
 import sys
+from grpc_health.v1 import health, health_pb2_grpc, health_pb2
 
 def grpc_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -16,6 +17,13 @@ def grpc_server():
         reflection.SERVICE_NAME,  # Required for reflection to work
     )
     reflection.enable_server_reflection(SERVICE_NAMES, server)
+
+      # Register the health check service
+    health_servicer = health.HealthServicer()
+    health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
+    
+    # Set health status to SERVING
+    health_servicer.set("nlp-service", health_pb2.HealthCheckResponse.SERVING)
 
     server.add_insecure_port("0.0.0.0:5000")
     server.start()

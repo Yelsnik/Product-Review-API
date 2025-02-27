@@ -1,0 +1,99 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=mahanta
+      - POSTGRES_DB=review_service
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d review_service"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - product-review-network
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - product-review-network
+    # volumes:
+    #   - redis:/data
+
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    ports:
+      - "6000:6000"
+    environment:
+      - DB_SOURCE=postgresql://root:mahanta@postgres:5432/review_service
+      - REDIS=redis:6379 
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nlp-service:
+        condition: service_started
+    networks:
+      - product-review-network
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:6000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # entrypoint: [
+    #     "/app/wait-for.sh",
+    #     "postgres:5432",
+    #     "--",
+    #     "/app/wait-for.sh",
+    #     "redis:6379",
+    #     # "--",
+    #     # "/app/start.sh",
+    #   ]
+    # command: ["/app/main"]
+
+  nlp-service:
+    build:
+      context: ./nlp-service
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - product-review-network
+    healthcheck:
+      test: ["CMD", "/bin/grpc_health_probe", "-addr=localhost:5000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    depends_on:
+      review-service:
+        condition: service_started
+    networks:
+      - product-review-network
+
+    command: ["node", "dist/src/main"]
+
+# volumes:
+#   redis:
+#     driver: local
+
+networks:
+  product-review-network:
+    driver: bridge
